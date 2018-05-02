@@ -35,6 +35,20 @@
             <plugin>
                 <groupId>com.gupao.learner.mrzhang</groupId>
                 <artifactId>practice-180502-demo-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>scan</goal>
+                        </goals>
+                        <configuration>
+                            <scanPath>${project.basedir}</scanPath>
+
+                            <!--the target Suffix default value is : .java-->
+                            <targetSuffix>.java</targetSuffix>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

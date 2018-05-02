@@ -34,6 +34,7 @@ public class ScanMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (StringUtils.isEmpty(this.scanPath)) {
+            System.out.println("the scan path was empty.");
             return;
         }
         System.out.println(MessageFormat.format("scan path is:{0}", this.scanPath));
