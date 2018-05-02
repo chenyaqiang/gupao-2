@@ -33,8 +33,8 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>mrzhang-homework</artifactId>
                 <groupId>com.gupao.learner.mrzhang</groupId>
+                <artifactId>practice-180502-demo-plugin</artifactId>
             </plugin>
         </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -70,8 +70,8 @@
                 </plugin>
 
                 <plugin>
-                    <artifactId>mrzhang-homework</artifactId>
                     <groupId>com.gupao.learner.mrzhang</groupId>
+                    <artifactId>practice-180502-demo-plugin</artifactId>
                     <version>1.0-SNAPSHOT</version>
                 </plugin>
             </plugins>
