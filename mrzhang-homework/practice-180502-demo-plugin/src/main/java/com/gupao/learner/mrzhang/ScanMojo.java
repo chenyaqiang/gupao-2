@@ -34,13 +34,14 @@ public class ScanMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (StringUtils.isEmpty(this.scanPath)) {
-            System.out.println("the scan path was empty.");
+            System.out.println("The scan path is empty.");
             return;
         }
-        System.out.println(MessageFormat.format("scan path is:{0}", this.scanPath));
+        System.out.println(MessageFormat.format("The scan path is:{0}", this.scanPath));
         List<String> lstFiles = doScan(this.scanPath);
-        System.out.println("The total files size is:" + lstFiles.size());
+        System.out.println("The total file length is:" + lstFiles.size());
         System.out.println("----- list details are those below -----");
+        //        lstFiles.forEach(System.out::println);
         for (String lstFile : lstFiles) {
             System.out.println(lstFile);
         }
