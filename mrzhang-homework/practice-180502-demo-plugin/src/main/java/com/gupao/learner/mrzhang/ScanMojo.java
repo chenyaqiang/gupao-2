@@ -27,32 +27,23 @@ public class ScanMojo extends AbstractMojo {
 
     /** the path which used as scan entry */
     @Parameter(property = "path")
-    private String                scanPath;
+    private String scanPath;
 
     @Parameter(property = "targetSuffix", defaultValue = ".java")
-    private String                targetSuffix;
-
-    /** set a filter rule*/
-    //    private final Predicate<File> filter = file -> {
-    //                                             String fileName = file.getName();
-    //                                             int i = fileName.lastIndexOf(".");
-    //                                             if (i == -1) {
-    //                                                 return false;
-    //                                             }
-    //                                             String suffix = fileName.substring(i);
-    //                                             return this.targetSuffix.equals(suffix);
-    //                                         };
+    private String targetSuffix;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        //        if (StringUtils.isEmpty(this.scanPath)) {
-        //            return;
-        //        }
-        //        System.out.println(MessageFormat.format("scan path is:{0}", this.scanPath));
-        //        List<String> lstFiles = doScan(this.scanPath);
-        //        System.out.println("The total files size is:" + lstFiles.size());
-        //        System.out.println("----- list details are those below -----");
-        //        lstFiles.forEach(System.out::println);
+        if (StringUtils.isEmpty(this.scanPath)) {
+            return;
+        }
+        System.out.println(MessageFormat.format("scan path is:{0}", this.scanPath));
+        List<String> lstFiles = doScan(this.scanPath);
+        System.out.println("The total files size is:" + lstFiles.size());
+        System.out.println("----- list details are those below -----");
+        for (String lstFile : lstFiles) {
+            System.out.println(lstFile);
+        }
     }
 
     /**
@@ -73,18 +64,28 @@ public class ScanMojo extends AbstractMojo {
             }
 
             // 执行过滤.
-            //            if (!this.filter.test(f)) {
-            //                continue;
-            //            }
-
+            if (!this.doFilter(f)) {
+                continue;
+            }
             lstFileName.add(f.getPath());
         }
         return lstFileName;
     }
 
+    private boolean doFilter(File file) {
+        final Integer none = -1;
+        String fileName = file.getName();
+        Integer i = fileName.lastIndexOf(".");
+        if (i.equals(none)) {
+            return false;
+        }
+
+        return this.targetSuffix.equals(fileName.substring(i));
+    }
+
     //    public static void main(String[] args) throws MojoFailureException, MojoExecutionException {
     //        ScanMojo scanMojo = new ScanMojo();
-    //        scanMojo.setScanPath("/Users/zhangliang/Workspaces/Code/github/zhangliang/homework/gupao");
+    //        scanMojo.setScanPath("/Users/zhangliang/Workspaces/Code/github/zhangliang/homework/gupao/mrzhang-homework");
     //        scanMojo.execute();
     //    }
 }
