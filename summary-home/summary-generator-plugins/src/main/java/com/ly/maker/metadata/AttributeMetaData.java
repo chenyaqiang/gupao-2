@@ -16,9 +16,11 @@ public class AttributeMetaData extends BaseMetaData {
     /** 数据类型 */
     private String   type;
 
-    private Class<?> fullType;
+    /** clazz全类型限定 */
+    private Class<?> nextType;
 
-    private boolean  isBaseType;
+    /** 是否是基础数据类型 */
+    private boolean  hasChildren;
 
     /**
      * Getter method for property <tt>required</tt>.
@@ -79,17 +81,17 @@ public class AttributeMetaData extends BaseMetaData {
      *
      * @return property value of fullType
      */
-    public Class<?> getFullType() {
-        return fullType;
+    public Class<?> getNextType() {
+        return nextType;
     }
 
     /**
      * Setter method for property <tt>fullType</tt>.
      *
-     * @param fullType value to be assigned to property fullType
+     * @param nextType value to be assigned to property fullType
      */
-    public void setFullType(Class<?> fullType) {
-        this.fullType = fullType;
+    public void setNextType(Class<?> nextType) {
+        this.nextType = nextType;
     }
 
     /**
@@ -97,16 +99,16 @@ public class AttributeMetaData extends BaseMetaData {
      *
      * @return property value of isBaseType
      */
-    public boolean isBaseType() {
-        return isBaseType;
+    public boolean isHasChildren() {
+        return hasChildren;
     }
 
     /**
      * Setter method for property <tt>baseType</tt>.
      *
-     * @param baseType value to be assigned to property baseType
+     * @param hasChildren value to be assigned to property baseType
      */
-    public void setBaseType(boolean baseType) {
-        isBaseType = baseType;
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 }

@@ -1,6 +1,6 @@
 package com.ly.maker.test;
 
-import com.ly.maker.annotations.SummaryAttr;
+import com.ly.maker.annotations.DataType;
 import com.ly.maker.annotations.SummaryRoot;
 
 /**
@@ -9,7 +9,7 @@ import com.ly.maker.annotations.SummaryRoot;
  */
 @SummaryRoot(name = "btest-root")
 public class btest {
-    @SummaryAttr(name = "bname", description = "btest.bname", required = false)
+    @DataType(name = "bname", description = "btest.bname", required = false)
     private String bname;
 
     /**

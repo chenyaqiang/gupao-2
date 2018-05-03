@@ -34,8 +34,7 @@ public class StringFormatter implements Formatter<Node, String> {
             }
 
             if (nodeItem.getNodes() != null && nodeItem.getNodes().size() != 0) {
-                spaceCount += 2;
-                initBody(nodeItem, false, spaceCount);
+                initBody(nodeItem, false, spaceCount + 2);
             }
         }
     }

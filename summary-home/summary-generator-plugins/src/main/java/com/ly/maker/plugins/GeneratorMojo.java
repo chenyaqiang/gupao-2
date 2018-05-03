@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import com.ly.maker.annotations.DataType;
 import com.ly.maker.format.Formatter;
 import com.ly.maker.format.StringFormatter;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +15,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.ly.maker.annotations.SummaryAttr;
 import com.ly.maker.annotations.SummaryRoot;
 import com.ly.maker.enums.NodeType;
 import com.ly.maker.metadata.AttributeMetaData;
@@ -82,11 +82,11 @@ public class GeneratorMojo extends AbstractMojo {
             childNode.setDataType(attributeMetaData.getType());
             childNode.setRequired(attributeMetaData.isRequired());
             childNode.setNodeType(NodeType.Children);
-            if (!attributeMetaData.isBaseType()) {
+            if (attributeMetaData.isHasChildren()) {
                 // 尝试发现嵌套引用,并规避嵌套引用可能引起的死循环问题.(只能规避相邻层的递归嵌套引用,还是有bug)
                 // TODO 待处理递归引用的bug.
-                if (!aClass.getTypeName().equals(attributeMetaData.getFullType().getTypeName())) {
-                    Node nodeWithRecursive = this.createNodeWithRecursive(attributeMetaData.getFullType());
+                if (!aClass.getTypeName().equals(attributeMetaData.getNextType().getTypeName())) {
+                    Node nodeWithRecursive = this.createNodeWithRecursive(attributeMetaData.getNextType());
                     if (nodeWithRecursive != null) {
                         childNode.setNodes(Collections.singletonList(nodeWithRecursive));
                     }
@@ -113,7 +113,7 @@ public class GeneratorMojo extends AbstractMojo {
         };
     }
 
-    private List<AttributeMetaData> getAttrMetaData(Class<?> clazz) {
+    private List<AttributeMetaData> getAttrMetaData(Class<?> clazz) throws ClassNotFoundException {
         Objects.requireNonNull(clazz, "clazz should not be null.");
         Field[] declaredFields = clazz.getDeclaredFields();
         List<AttributeMetaData> attributeMetaDataList = new ArrayList<>();
@@ -122,19 +122,20 @@ public class GeneratorMojo extends AbstractMojo {
         }
 
         for (Field declaredField : declaredFields) {
-            if (!declaredField.isAnnotationPresent(SummaryAttr.class)) {
+            if (!declaredField.isAnnotationPresent(DataType.class)) {
                 continue;
             }
 
-            SummaryAttr annotation = declaredField.getAnnotation(SummaryAttr.class);
+            DataType annotation = declaredField.getAnnotation(DataType.class);
+            Class<?> nextType = StringUtils.isEmpty(annotation.itemType()) ? declaredField.getType() : Class.forName(annotation.itemType());
             attributeMetaDataList.add(new AttributeMetaData() {
                 {
                     setName(StringUtils.isEmpty(annotation.name()) ? declaredField.getName() : annotation.name());
                     setDesc(annotation.description());
                     setRequired(annotation.required());
                     setType(declaredField.getType().getName());
-                    setBaseType(isBaseDataType(declaredField.getType()));
-                    setFullType(declaredField.getType());
+                    setHasChildren(annotation.hasChild());//isBaseDataType(declaredField.getType())
+                    setNextType(nextType);//declaredField.getType());
                 }
             });
         }

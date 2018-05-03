@@ -4,9 +4,9 @@ package com.ly.maker.annotations;
  * The interface Summary complex attr.
  *
  * @author zhangliang
- * @version Id : SummaryComplexAttr, v 0.1 2018/5/3 10:21 zhangliang Exp $
+ * @version Id : ComplexListType, v 0.1 2018/5/3 10:21 zhangliang Exp $
  */
-public @interface SummaryComplexAttr {
+public @interface ComplexListType {
     /**
      * Name string.
      *
