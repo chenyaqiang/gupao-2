@@ -5,12 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
-import com.ly.maker.annotations.SummaryRoot;
-import com.ly.maker.enums.NodeType;
-import com.ly.maker.metadata.TypeMetaData;
-import com.ly.maker.model.ChildNode;
-import com.ly.maker.model.Node;
-import com.ly.maker.model.RootNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -18,7 +13,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ly.maker.annotations.SummaryAttr;
+import com.ly.maker.annotations.SummaryRoot;
+import com.ly.maker.enums.NodeType;
 import com.ly.maker.metadata.AttributeMetaData;
+import com.ly.maker.metadata.TypeMetaData;
+import com.ly.maker.model.ChildNode;
+import com.ly.maker.model.Node;
+import com.ly.maker.model.RootNode;
 
 /**
  * The type Generator mojo.
@@ -67,8 +68,6 @@ public class GeneratorMojo extends AbstractMojo {
      * @return node
      */
     private Node createNodeWithRecursive(Class<?> aClass) throws ClassNotFoundException {
-
-        // Class<?> aClass = Class.forName(filepath);
         TypeMetaData typeMetadata = getTypeMetadata(aClass);
         if (typeMetadata == null) {
             return null;
@@ -89,8 +88,15 @@ public class GeneratorMojo extends AbstractMojo {
             childNode.setRequired(attributeMetaData.isRequired());
             childNode.setNodeType(NodeType.Children);
             if (!attributeMetaData.isBaseType()) {
-                childNode.setNodes(Collections.singletonList(this.createNodeWithRecursive(attributeMetaData.getFullType())));
+                // 尝试发现嵌套引用,并规避嵌套引用可能引起的死循环问题.
+                if (!aClass.getTypeName().equals(attributeMetaData.getFullType().getTypeName())) {
+                    Node nodeWithRecursive = this.createNodeWithRecursive(attributeMetaData.getFullType());
+                    if (nodeWithRecursive != null) {
+                        childNode.setNodes(Collections.singletonList(nodeWithRecursive));
+                    }
+                }
             }
+
             currentNodeList.add(childNode);
         }
 
@@ -127,7 +133,7 @@ public class GeneratorMojo extends AbstractMojo {
             SummaryAttr annotation = declaredField.getAnnotation(SummaryAttr.class);
             attributeMetaDataList.add(new AttributeMetaData() {
                 {
-                    setName(annotation.name());
+                    setName(StringUtils.isEmpty(annotation.name()) ? declaredField.getName() : annotation.name());
                     setDesc(annotation.description());
                     setRequired(annotation.required());
                     setType(declaredField.getType().getName());

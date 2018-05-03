@@ -18,6 +18,9 @@ public class test {
     @SummaryAttr(name = "test", required = false, description = "complex type, btest")
     private btest   btest;
 
+    @SummaryAttr(name = "hahahah---self", description = "self usage test", required = true)
+    private test    selftest;
+
     /**
      * Getter method for property <tt>btest</tt>.
      *
