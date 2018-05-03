@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import com.ly.maker.format.Formatter;
+import com.ly.maker.format.StringFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,22 +31,14 @@ public class GeneratorMojo extends AbstractMojo {
 
     /** 需要生成文档的主类文件列表,将尝试为列表中每个指定的类生成接口说明文档 */
     @Parameter
-    private List<String> packageFileList;
+    private List<String>            packageFileList;
+
+    private Formatter<Node, String> formatter = new StringFormatter();
 
     public GeneratorMojo() {
         this.packageFileList = Collections.singletonList("com.ly.maker.test.test");
     }
 
-    /**
-     * Perform whatever build-process behavior this <code>Mojo</code> implements.<br>
-     * This is the main trigger for the <code>Mojo</code> inside the <code>Maven</code> system, and allows
-     * the <code>Mojo</code> to communicate errors.
-     *
-     * @throws MojoExecutionException if an unexpected problem occurs.
-     *                                Throwing this exception causes a "BUILD ERROR" message to be displayed.
-     * @throws MojoFailureException   if an expected problem (such as a compilation failure) occurs.
-     *                                Throwing this exception causes a "BUILD FAILURE" message to be displayed.
-     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.packageFileList == null || this.packageFileList.size() == 0) {
@@ -56,6 +50,7 @@ public class GeneratorMojo extends AbstractMojo {
         try {
             for (String fileItem : finalFileList) {
                 Node node = this.createNodeWithRecursive(Class.forName(fileItem));
+                System.out.println(formatter.format(node));
                 System.out.println("end");
             }
         } catch (ClassNotFoundException ex) {

@@ -10,7 +10,7 @@ import java.util.List;
  * @author zhangliang
  * @version Id : Node, v 0.1 2018/5/3 15:27 zhangliang Exp $
  */
-public class Node {
+public abstract class Node {
     private String     name;
 
     private List<Node> nodes;
@@ -70,4 +70,6 @@ public class Node {
     public void setNodeType(NodeType nodeType) {
         this.nodeType = nodeType;
     }
+
+    public abstract String format();
 }

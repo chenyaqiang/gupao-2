@@ -1,5 +1,7 @@
 package com.ly.maker.model;
 
+import java.text.MessageFormat;
+
 /**
  * The type Child node.
  *
@@ -63,5 +65,10 @@ public class ChildNode extends Node {
      */
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    @Override
+    public String format() {
+        return MessageFormat.format("{0}\t{1}\t{2}\t{3}", this.getName(), this.getDataType(), this.isRequired() ? "Y" : "N", this.getDescription());
     }
 }

@@ -15,11 +15,11 @@ public class test {
     @SummaryAttr(name = "age", required = true, description = "test.age")
     private Integer age;
 
-    @SummaryAttr(name = "test", required = false, description = "complex type, btest")
+    @SummaryAttr(name = "btest", required = false, description = "complex type, btest")
     private btest   btest;
 
-    @SummaryAttr(name = "hahahah---self", description = "self usage test", required = true)
-    private test    selftest;
+    //    @SummaryAttr(description = "self usage test", required = true)
+    //    private test    selftest;
 
     /**
      * Getter method for property <tt>btest</tt>.
