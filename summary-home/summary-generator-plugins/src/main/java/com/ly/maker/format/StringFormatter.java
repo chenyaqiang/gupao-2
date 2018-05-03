@@ -29,14 +29,10 @@ public class StringFormatter implements Formatter<Node, String> {
 
         for (Node nodeItem : nodes) {
             String str = getSpace(spaceCount) + nodeItem.format();
-            if (nodeItem.getNodeType().equals(NodeType.Parent)) {
-                if (isprintroot) {
-                    System.out.println("__-----");
-                    System.out.println(str);
-                }
-            } else {
+            if (!nodeItem.getNodeType().equals(NodeType.Parent)) {
                 System.out.println(str);
             }
+
             if (nodeItem.getNodes() != null && nodeItem.getNodes().size() != 0) {
                 spaceCount += 2;
                 initBody(nodeItem, false, spaceCount);
