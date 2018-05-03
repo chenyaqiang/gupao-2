@@ -10,7 +10,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>summary-annotations</module>
-        <module>summary-generator-plugin</module>
     </modules>
 
     <name>summary-home</name>
@@ -19,8 +18,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.plugin.api.version>3.5.3</maven.plugin.api.version>
+        <maven.plugin.annotations.version>3.5.1</maven.plugin.annotations.version>
     </properties>
 
     <dependencies>
@@ -30,28 +31,52 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.maven</groupId>-->
+        <!--<artifactId>maven-plugin-api</artifactId>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.maven.plugin-tools</groupId>-->
+        <!--<artifactId>maven-plugin-annotations</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven.plugin.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven.plugin.annotations.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>com.gupao.learner.mrzhang</groupId>-->
-            <!--<artifactId>practice-180502-demo-plugin</artifactId>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>clean</phase>-->
-            <!--<goals>-->
-            <!--<goal>scan</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<scanPath>${project.basedir}</scanPath>-->
+            <plugin>
+                <groupId>com.gupao.learner.mrzhang</groupId>
+                <artifactId>practice-180502-demo-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>scan</goal>
+                        </goals>
+                        <configuration>
+                            <scanPath>${project.basedir}</scanPath>
 
-            <!--&lt;!&ndash;the target Suffix default value is : .java&ndash;&gt;-->
-            <!--<targetSuffix>.java</targetSuffix>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
+                            <!--the target Suffix default value is : .java-->
+                            <targetSuffix>.java</targetSuffix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
