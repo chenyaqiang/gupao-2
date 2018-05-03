@@ -83,7 +83,8 @@ public class GeneratorMojo extends AbstractMojo {
             childNode.setRequired(attributeMetaData.isRequired());
             childNode.setNodeType(NodeType.Children);
             if (!attributeMetaData.isBaseType()) {
-                // 尝试发现嵌套引用,并规避嵌套引用可能引起的死循环问题.
+                // 尝试发现嵌套引用,并规避嵌套引用可能引起的死循环问题.(只能规避相邻层的递归嵌套引用,还是有bug)
+                // TODO 待处理递归引用的bug.
                 if (!aClass.getTypeName().equals(attributeMetaData.getFullType().getTypeName())) {
                     Node nodeWithRecursive = this.createNodeWithRecursive(attributeMetaData.getFullType());
                     if (nodeWithRecursive != null) {

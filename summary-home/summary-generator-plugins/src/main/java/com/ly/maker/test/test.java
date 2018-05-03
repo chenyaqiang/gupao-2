@@ -3,6 +3,8 @@ package com.ly.maker.test;
 import com.ly.maker.annotations.SummaryAttr;
 import com.ly.maker.annotations.SummaryRoot;
 
+import java.util.List;
+
 /**
  * @author zhangliang
  * @version Id: test, v 0.1 2018/5/3 11:39 zhangliang Exp $
@@ -10,13 +12,16 @@ import com.ly.maker.annotations.SummaryRoot;
 @SummaryRoot(name = "parent", description = "parent-test")
 public class test {
     @SummaryAttr(name = "name", required = true, description = "test.name")
-    private String  name;
+    private String       name;
 
     @SummaryAttr(name = "age", required = true, description = "test.age")
-    private Integer age;
+    private Integer      age;
 
     @SummaryAttr(name = "btest", required = false, description = "complex type, btest")
-    private btest   btest;
+    private btest        btest;
+
+    @SummaryAttr(description = "list collection")
+    private List<String> lstCollection;
 
     //    @SummaryAttr(description = "self usage test", required = true)
     //    private test    selftest;
