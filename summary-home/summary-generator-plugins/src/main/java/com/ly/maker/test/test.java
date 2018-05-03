@@ -1,12 +1,21 @@
-package com.ly.maker;
+package com.ly.maker.test;
+
+import com.ly.maker.annotations.SummaryAttr;
+import com.ly.maker.annotations.SummaryRoot;
 
 /**
  * @author zhangliang
  * @version Id: test, v 0.1 2018/5/3 11:39 zhangliang Exp $
  */
+@SummaryRoot(name = "parent", description = "parent-test")
 public class test {
+    @SummaryAttr(name = "name", required = true, description = "test.name")
     private String  name;
+
+    @SummaryAttr(name = "age", required = true, description = "test.age")
     private Integer age;
+
+    @SummaryAttr(name = "test", required = false, description = "complex type, btest")
     private btest   btest;
 
     /**
@@ -14,7 +23,7 @@ public class test {
      *
      * @return property value of btest
      */
-    public com.ly.maker.btest getBtest() {
+    public com.ly.maker.test.btest getBtest() {
         return btest;
     }
 
@@ -23,7 +32,7 @@ public class test {
      *
      * @param btest value to be assigned to property btest
      */
-    public void setBtest(com.ly.maker.btest btest) {
+    public void setBtest(com.ly.maker.test.btest btest) {
         this.btest = btest;
     }
 

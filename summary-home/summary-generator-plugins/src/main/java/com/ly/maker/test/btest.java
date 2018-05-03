@@ -1,10 +1,15 @@
-package com.ly.maker;
+package com.ly.maker.test;
+
+import com.ly.maker.annotations.SummaryAttr;
+import com.ly.maker.annotations.SummaryRoot;
 
 /**
  * @author zhangliang
  * @version Id: btest, v 0.1 2018/5/3 12:13 zhangliang Exp $
  */
+@SummaryRoot(name = "btest-root")
 public class btest {
+    @SummaryAttr(name = "bname", description = "btest.bname", required = false)
     private String bname;
 
     /**

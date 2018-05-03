@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * @version Id : SummaryRoot, v 0.1 2018/5/3 10:15 zhangliang Exp $
  */
 @Documented
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
 public @interface SummaryRoot {
@@ -18,12 +18,12 @@ public @interface SummaryRoot {
      *
      * @return name string
      */
-    String name();
+    String name() default "";
 
     /**
      * Description string.
      *
      * @return the string
      */
-    String description();
+    String description() default "";
 }

@@ -17,19 +17,19 @@ public @interface SummaryAttr {
      *
      * @return the string
      */
-    String name();
+    String name() default "";
 
     /**
      * Required boolean.
      *
      * @return the boolean
      */
-    boolean required();
+    boolean required() default false;
 
     /**
      * Description string.
      *
      * @return the string
      */
-    String description();
+    String description() default "";
 }
