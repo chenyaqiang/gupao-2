@@ -108,10 +108,12 @@ public class GeneratorMojo extends AbstractMojo {
         File libDir = new File(libPath.replaceAll("file:", ""));
         if (libDir.listFiles() != null) {
             for (File jar : libDir.listFiles()) {
+                // 加载指定位置的jar包(jar包中包含了classes文件,可以理解成自动解压jar包，然后从中加载classes文件夹下的所有.class文件.)
                 libs.add(new URL(null, libPath + jar.getName(), sh));
             }
         }
 
+        // 直接加载classes/文件夹下的所有.class文件
         libs.add(new URL(null, basePath, sh));
         loader = new URLClassLoader(libs.toArray(new URL[libs.size()]), Thread.currentThread().getContextClassLoader());
     }
