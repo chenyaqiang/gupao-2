@@ -3,6 +3,7 @@ package com.ly.maker.plugins;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -10,10 +11,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import com.ly.maker.writer.FileWriterImpl;
 import com.ly.maker.writer.PrintWriteImpl;
@@ -171,7 +169,12 @@ public class GeneratorMojo extends AbstractMojo {
             return attributeMetaDataList;
         }
 
+        Map<String, String> methods = getMethods(clazz.getMethods());
         for (Field declaredField : declaredFields) {
+            if (!methods.containsKey("get" + declaredField.getName().toLowerCase())) {
+                continue;
+            }
+
             DataType annotation = null;
             if (declaredField.isAnnotationPresent(DataType.class)) {
                 annotation = declaredField.getAnnotation(DataType.class);
@@ -191,6 +194,14 @@ public class GeneratorMojo extends AbstractMojo {
         }
 
         return attributeMetaDataList;
+    }
+
+    private Map<String, String> getMethods(Method[] methods) {
+        Map<String, String> maps = new HashMap<>();
+        for (Method method : methods) {
+            maps.put(method.getName().toLowerCase(), "");
+        }
+        return maps;
     }
 
     private FieldMetaData getFiledMeta(Field field, DataType annotation, IgnoreSubType ignoreSubType, ListType listType) throws ClassNotFoundException {
