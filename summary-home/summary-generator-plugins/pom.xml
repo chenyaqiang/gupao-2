@@ -5,7 +5,7 @@
     <parent>
         <artifactId>summary-home</artifactId>
         <groupId>com.ly.maker</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.ly.maker</groupId>
             <artifactId>summary-annotations</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

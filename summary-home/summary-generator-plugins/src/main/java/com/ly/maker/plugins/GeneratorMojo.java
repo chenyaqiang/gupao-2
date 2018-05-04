@@ -1,10 +1,15 @@
 package com.ly.maker.plugins;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLStreamHandler;
 import java.util.*;
 
 import com.ly.maker.annotations.*;
@@ -36,11 +41,16 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter
     private List<String>            packageFileList;
 
-    private Formatter<Node, String> formatter = new StringFormatter();
+    @Parameter
+    private String                  classPath;
 
-    //    public GeneratorMojo() {
-    //        this.packageFileList = Collections.singletonList("com.ly.maker.test.Student");
-    //    }
+    @Parameter
+    private String                  libDir;
+
+    //全局类加载器
+    private URLClassLoader          loader;
+
+    private Formatter<Node, String> formatter = new StringFormatter();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -51,8 +61,13 @@ public class GeneratorMojo extends AbstractMojo {
 
         List<String> finalFileList = this.prepareFilePathList();
         try {
+            initLoader();
             for (String fileItem : finalFileList) {
-                Class<?> aClass = Class.forName(fileItem);
+                System.out.println("----------");
+                System.out.println("package name=" + fileItem);
+                System.out.println(Thread.currentThread().getContextClassLoader());
+                System.out.println("----------");
+                Class<?> aClass = Class.forName(fileItem, true, loader);
                 if (!aClass.isAnnotationPresent(SummaryRoot.class)) {
                     continue;
                 }
@@ -66,9 +81,28 @@ public class GeneratorMojo extends AbstractMojo {
                 System.out.println(formatter.format(parentNode));
                 System.out.println("end");
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             throw new MojoExecutionException("GeneratorMojo执行异常", ex);
         }
+    }
+
+    private void initLoader() throws IOException {
+        String basePath = (new URL("file", null, new File(classPath).getCanonicalPath() + File.separator)).toString();
+        String libPath = (new URL("file", null, new File(libDir).getCanonicalPath() + File.separator)).toString();
+
+        System.out.println("bashPath=" + basePath);
+        System.out.println("libPath=" + libPath);
+        URLStreamHandler sh = null;
+        List<URL> libs = new ArrayList<>();
+        File libDir = new File(libPath.replaceAll("file:", ""));
+        if (libDir.listFiles() != null) {
+            for (File jar : libDir.listFiles()) {
+                libs.add(new URL(null, libPath + jar.getName(), sh));
+            }
+        }
+
+        libs.add(new URL(null, basePath, sh));
+        loader = new URLClassLoader(libs.toArray(new URL[libs.size()]), Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -155,7 +189,7 @@ public class GeneratorMojo extends AbstractMojo {
         FieldMetaData metaData = new FieldMetaData() {
             {
                 setName(field.getName());
-                setDesc("");
+                setDesc("暂无");
                 setRequired(false);
                 setType(field.getType().getSimpleName());
                 setHasChildren(false);
