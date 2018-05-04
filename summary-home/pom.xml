@@ -7,7 +7,7 @@
     <groupId>com.ly.maker</groupId>
     <artifactId>summary-home</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0.1-SNAPSHOT</version>
+    <version>1.0.0.1-RELEASE</version>
     <modules>
         <module>summary-annotations</module>
         <module>summary-generator-plugins</module>

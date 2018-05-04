@@ -47,10 +47,16 @@ public class GeneratorMojo extends AbstractMojo {
     private List<String>                  packageFileList;
 
     @Parameter
-    private String                        classPath;
+    private String                        classPath;                        //= "/Users/zhangliang/Workspaces/Code/github/zhangliang/homework/gupao/summary-home/summary-generator-plugins/target/classes";
 
     @Parameter
     private String                        libDir;
+
+    @Parameter
+    private String                        scanPackage;                      // = "com.ly.maker.enums";
+
+    @Parameter
+    private String                        targetFile;
 
     //全局类加载器
     private URLClassLoader                loader;
@@ -65,13 +71,12 @@ public class GeneratorMojo extends AbstractMojo {
             return;
         }
 
-        List<String> finalFileList = this.prepareFilePathList();
+        List<String> finalFileList = this.prepareFilePathList(classPath);
         try {
             initLoader();
             for (String fileItem : finalFileList) {
                 System.out.println("----------");
-                System.out.println("package name=" + fileItem);
-                System.out.println(Thread.currentThread().getContextClassLoader());
+                System.out.println("current package name=" + fileItem);
                 System.out.println("----------");
                 Class<?> aClass = Class.forName(fileItem, true, loader);
                 if (!aClass.isAnnotationPresent(SummaryRoot.class)) {
@@ -85,7 +90,7 @@ public class GeneratorMojo extends AbstractMojo {
 
                 this.fillNodeWithRecursive(parentNode, aClass);
                 this.write.save(formatter.format(parentNode));
-                System.out.println("end--hahahah");
+                System.out.println("文件生成结束.");
             }
         } catch (ClassNotFoundException | IOException ex) {
             throw new MojoExecutionException("GeneratorMojo执行异常", ex);
@@ -137,21 +142,6 @@ public class GeneratorMojo extends AbstractMojo {
 
             currentNodeList.add(childNode);
         }
-
-    }
-
-    private TypeMetaData getTypeMetadata(Class<?> clazz) {
-        Objects.requireNonNull(clazz, "clazz should not be null.");
-        if (!clazz.isAnnotationPresent(SummaryRoot.class)) {
-            return null;
-        }
-
-        SummaryRoot annotation = clazz.getAnnotation(SummaryRoot.class);
-        return new TypeMetaData() {
-            {
-                setName(annotation.name());
-            }
-        };
     }
 
     /**
@@ -250,8 +240,32 @@ public class GeneratorMojo extends AbstractMojo {
     }
 
     /** 获取需要扫描的文件路径,预留扩展,方便以后对整个路径的扫描支持. */
-    private List<String> prepareFilePathList() {
-        return this.packageFileList;
+    public List<String> prepareFilePathList(String dirPath) {
+        List<String> strings = new ArrayList<>();
+        // 加载classpath对应的文件夹.
+        File dir = new File(dirPath);
+        if (dir.listFiles() == null) {
+            return strings;
+        }
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                strings.addAll(this.prepareFilePathList(file.getPath()));
+                continue;
+            }
+
+            if (!file.getName().endsWith(".class")) {
+                continue;
+            }
+
+            String classPackageName = file.getPath().replaceAll("\\\\", "/").replaceAll(classPath.replaceAll("\\\\", "/"), "").replaceAll("/", ".").replaceAll("\\.class", "");
+            classPackageName = classPackageName.substring(1, classPackageName.length());
+            if (classPackageName.startsWith(scanPackage)) {
+                strings.add(classPackageName);
+            }
+        }
+
+        return strings;
     }
 
     /**
@@ -267,6 +281,10 @@ public class GeneratorMojo extends AbstractMojo {
 
     //    public static void main(String[] args) throws ClassNotFoundException, MojoFailureException, MojoExecutionException {
     //        GeneratorMojo mojo = new GeneratorMojo();
-    //        mojo.execute();
+    //        List<String> strings = mojo.prepareFilePathList("/Users/zhangliang/Workspaces/Code/github/zhangliang/homework/gupao/summary-home/summary-generator-plugins/target/classes");
+    //        for (String string : strings) {
+    //            System.out.println(string);
+    //        }
+    //        //        mojo.execute();
     //    }
 }
