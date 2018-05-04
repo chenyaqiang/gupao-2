@@ -4,9 +4,9 @@ package com.ly.maker.metadata;
  * The type Attribute data.
  *
  * @author zhangliang
- * @version Id : AttributeMetaData, v 0.1 2018/5/3 14:48 zhangliang Exp $
+ * @version Id : FieldMetaData, v 0.1 2018/5/3 14:48 zhangliang Exp $
  */
-public class AttributeMetaData extends BaseMetaData {
+public class FieldMetaData extends BaseMetaData {
     /** 是否是必须 */
     private boolean  required;
 
@@ -15,6 +15,9 @@ public class AttributeMetaData extends BaseMetaData {
 
     /** 数据类型 */
     private String   type;
+
+    /**
+    private boolean complex;
 
     /** clazz全类型限定 */
     private Class<?> nextType;

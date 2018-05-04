@@ -32,13 +32,4 @@ public @interface DataType {
      * @return the string
      */
     String description() default "";
-
-    /**
-     * Item type string.
-     *
-     * @return the string
-     */
-    String itemType() default "";
-
-    boolean hasChild() default false;
 }
