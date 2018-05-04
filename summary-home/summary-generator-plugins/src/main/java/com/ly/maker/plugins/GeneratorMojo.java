@@ -10,12 +10,11 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
-import com.ly.maker.annotations.*;
-import com.ly.maker.format.Formatter;
-import com.ly.maker.format.StringFormatter;
-import com.ly.maker.metadata.FieldMetaData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,13 +22,18 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.ly.maker.annotations.DataType;
+import com.ly.maker.annotations.IgnoreSubType;
+import com.ly.maker.annotations.ListType;
+import com.ly.maker.annotations.SummaryRoot;
 import com.ly.maker.enums.NodeType;
+import com.ly.maker.format.Formatter;
+import com.ly.maker.format.StringFormatter;
+import com.ly.maker.metadata.FieldMetaData;
 import com.ly.maker.metadata.TypeMetaData;
 import com.ly.maker.model.ChildNode;
 import com.ly.maker.model.Node;
 import com.ly.maker.model.RootNode;
-
-import javax.lang.model.type.ReferenceType;
 
 /**
  * The type Generator mojo.
@@ -219,7 +223,7 @@ public class GeneratorMojo extends AbstractMojo {
             // 取出元素类型.
             Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
             Type actualTypeArgument = actualTypeArguments[0];
-            if (!isBaseDataType(actualTypeArgument.getClass())) {
+            if (!isBaseDataType((Class) actualTypeArgument)) {
                 metaData.setHasChildren(true);
                 metaData.setNextType((Class) actualTypeArgument);
             }
