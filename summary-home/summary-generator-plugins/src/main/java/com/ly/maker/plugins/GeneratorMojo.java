@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.ly.maker.writer.FileWriterImpl;
+import com.ly.maker.writer.PrintWriteImpl;
+import com.ly.maker.writer.Writer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -43,18 +46,19 @@ public class GeneratorMojo extends AbstractMojo {
 
     /** 需要生成文档的主类文件列表,将尝试为列表中每个指定的类生成接口说明文档 */
     @Parameter
-    private List<String>            packageFileList;
+    private List<String>                  packageFileList;
 
     @Parameter
-    private String                  classPath;
+    private String                        classPath;
 
     @Parameter
-    private String                  libDir;
+    private String                        libDir;
 
     //全局类加载器
-    private URLClassLoader          loader;
+    private URLClassLoader                loader;
 
-    private Formatter<Node, String> formatter = new StringFormatter();
+    private Formatter<Node, List<String>> formatter = new StringFormatter();
+    private Writer<List<String>>          write     = new FileWriterImpl();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -82,8 +86,8 @@ public class GeneratorMojo extends AbstractMojo {
                 parentNode.setNodeType(NodeType.Parent);
 
                 this.fillNodeWithRecursive(parentNode, aClass);
-                System.out.println(formatter.format(parentNode));
-                System.out.println("end");
+                this.write.save(formatter.format(parentNode));
+                System.out.println("end--hahahah");
             }
         } catch (ClassNotFoundException | IOException ex) {
             throw new MojoExecutionException("GeneratorMojo执行异常", ex);
@@ -213,25 +217,21 @@ public class GeneratorMojo extends AbstractMojo {
             return metaData;
         }
 
-        if (isBaseDataType(field.getType())) {
+        Class<?> finalType = isListType(field.getType()) ? getActualType(field, 0) : field.getType();
+        if (isBaseDataType(finalType)) {
             metaData.setHasChildren(false);
             metaData.setNextType(null);
             return metaData;
         }
 
-        if (isListType(field.getType())) {
-            // 取出元素类型.
-            Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-            Type actualTypeArgument = actualTypeArguments[0];
-            if (!isBaseDataType((Class) actualTypeArgument)) {
-                metaData.setHasChildren(true);
-                metaData.setNextType((Class) actualTypeArgument);
-            }
-
-            return metaData;
-        }
-
+        metaData.setHasChildren(true);
+        metaData.setNextType((finalType));
         return metaData;
+    }
+
+    private Class<?> getActualType(Field field, int i) {
+        Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+        return (Class<?>) actualTypeArguments[i];
     }
 
     private boolean isListType(Class<?> type) {

@@ -6,6 +6,7 @@ import com.ly.maker.model.Node;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,15 +14,17 @@ import java.util.List;
  * @author zhangliang
  * @version Id : StringFormatter, v 0.1 2018/5/3 16:49 zhangliang Exp $
  */
-public class StringFormatter implements Formatter<Node, String> {
+public class StringFormatter implements Formatter<Node, List<String>> {
     @Override
-    public String format(Node node) {
-        initHeader();
-        initBody(node, true, 0);
-        return StringUtils.EMPTY;
+    public List<String> format(Node node) {
+        List<String> strings = new ArrayList<>();
+        initHeader(strings);
+        initBody(node, strings, 0);
+        return strings;
+        //return String.join("\r\n", strings);
     }
 
-    private void initBody(Node node, Boolean isprintroot, int spaceCount) {
+    private void initBody(Node node, List<String> strings, int spaceCount) {
         List<Node> nodes = node.getNodes();
         if (nodes == null || nodes.size() == 0) {
             return;
@@ -30,11 +33,12 @@ public class StringFormatter implements Formatter<Node, String> {
         for (Node nodeItem : nodes) {
             String str = getSpace(spaceCount) + nodeItem.format();
             if (!nodeItem.getNodeType().equals(NodeType.Parent)) {
-                System.out.println(str);
+                // System.out.println(str);
+                strings.add(str);
             }
 
             if (nodeItem.getNodes() != null && nodeItem.getNodes().size() != 0) {
-                initBody(nodeItem, false, spaceCount + 2);
+                initBody(nodeItem, strings, spaceCount + 2);
             }
         }
     }
@@ -52,7 +56,7 @@ public class StringFormatter implements Formatter<Node, String> {
         return str.toString() + "|";
     }
 
-    private void initHeader() {
-        System.out.println("属性名\t数据类型\t是否必须\t参数说明");
+    private void initHeader(List<String> strings) {
+        strings.add("属性名\t数据类型\t是否必须\t参数说明11");
     }
 }
